@@ -1,19 +1,10 @@
-import fs from 'fs'
-import path from 'path'
 import nodemailer from 'nodemailer'
 
-const filePath = path.join(process.cwd(), 'appointments.json')
-
-// Ensure file exists
-if (!fs.existsSync(filePath)) {
-  fs.writeFileSync(filePath, '[]')
-}
-
-let appointments = JSON.parse(fs.readFileSync(filePath, 'utf8'))
+let appointments = []
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
-  port: parseInt(process.env.SMTP_PORT || '587'),
+  port: process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT) : 587,
   secure: false,
   auth: {
     user: process.env.SMTP_USER || 'toshidelay@gmail.com',
@@ -21,33 +12,68 @@ const transporter = nodemailer.createTransport({
   },
 })
 
-function isConflict(newAppt) {
-  const newStart = new Date(`${newAppt.date}T${newAppt.time}`)
-  const newEnd = new Date(newStart.getTime() + newAppt.duration * 60000)
+function isConflict(newAppointment) {
+  const newStart = new Date(newAppointment.date + 'T' + newAppointment.time)
+  const newEnd = new Date(newStart.getTime() + newAppointment.duration * 60000)
 
-  return appointments.some(appt => {
-    if (appt.canceled) return false
-    const apptStart = new Date(`${appt.date}T${appt.time}`)
+  for (const appt of appointments) {
+    if (appt.canceled) continue
+    const apptStart = new Date(appt.date + 'T' + appt.time)
     const apptEnd = new Date(apptStart.getTime() + appt.duration * 60000)
-    return (
+
+    if (
       (newStart >= apptStart && newStart < apptEnd) ||
       (newEnd > apptStart && newEnd <= apptEnd) ||
       (newStart <= apptStart && newEnd >= apptEnd)
-    )
-  })
+    ) {
+      return true
+    }
+  }
+  return false
 }
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' })
+  }
 
-  const { name, email, phone, vehicle, service, date, time, addons, duration } = req.body
-  if (!name || !email || !phone || !vehicle || !service || !date || !time || !duration)
+  const {
+    name,
+    email,
+    phone,
+    vehicle,
+    service,
+    date,
+    time,
+    addons,
+    duration,
+  } = req.body
+
+  if (
+    !name ||
+    !email ||
+    !phone ||
+    !vehicle ||
+    !service ||
+    !date ||
+    !time ||
+    !duration
+  ) {
     return res.status(400).json({ error: 'Missing required fields' })
+  }
 
   const newAppointment = {
     id: Date.now().toString(),
-    name, email, phone, vehicle, service, date, time,
-    addons: addons || [], duration, canceled: false
+    name,
+    email,
+    phone,
+    vehicle,
+    service,
+    date,
+    time,
+    addons: addons || [],
+    duration,
+    canceled: false,
   }
 
   if (isConflict(newAppointment)) {
@@ -55,65 +81,62 @@ export default async function handler(req, res) {
   }
 
   appointments.push(newAppointment)
-  fs.writeFileSync(filePath, JSON.stringify(appointments, null, 2))
-
-  const logoCid = 'logo@gardenstatedetailing'
-
-  const htmlContent = (recipientName, isCustomer = false) => `
-    <div style="font-family:Arial,sans-serif;padding:20px">
-      <div style="text-align:center;">
-        <img src="cid:${logoCid}" alt="Logo" style="max-width:150px;margin-bottom:20px"/>
-      </div>
-      <h2 style="color:#c62828;">${isCustomer ? 'Thank You for Booking!' : 'New Appointment Request'}</h2>
-      <p>Hi ${recipientName},</p>
-      <p>${isCustomer 
-        ? `Thanks for choosing <strong>Garden State Detailing</strong>! I've received your request and will follow up within 24 hours.` 
-        : `You’ve received a new appointment request.`}</p>
-      <ul>
-        <li><strong>Customer:</strong> ${name}</li>
-        <li><strong>Contact:</strong> ${phone} | ${email}</li>
-        <li><strong>Vehicle:</strong> ${vehicle}</li>
-        <li><strong>Package:</strong> ${service}</li>
-        <li><strong>Add-ons:</strong> ${addons.length ? addons.join(', ') : 'None'}</li>
-        <li><strong>Date:</strong> ${date}</li>
-        <li><strong>Time:</strong> ${time}</li>
-        <li><strong>Duration:</strong> ${duration} mins</li>
-      </ul>
-      <p>${isCustomer 
-        ? `If you have questions, call/text me at <a href="tel:9735800014">(973) 580-0014</a> or email <a href="mailto:gardenstatedetailingllc@gmail.com">gardenstatedetailingllc@gmail.com</a>.` 
-        : 'Please confirm this appointment within 24 hours.'}</p>
-      <p style="margin-top:30px;">- Milton<br><strong>Garden State Detailing</strong></p>
-    </div>
-  `
 
   try {
+    // Send email to admin
     await transporter.sendMail({
-      from: `"Garden State Detailing" <${process.env.SMTP_USER}>`,
+      from: "Garden State Detailing" <${process.env.SMTP_USER}>,
       to: 'toshidelay@gmail.com',
       subject: 'New Detail Appointment Request',
-      html: htmlContent('Milton'),
-      attachments: [{
-        filename: 'logo.png',
-        path: './public/gardenbstate.png', // Or wherever your public logo is
-        cid: logoCid
-      }]
+      text: 
+Hey Milton,
+
+You have a new detail request:
+
+Customer: ${name}
+Contact: ${phone} | ${email}
+Vehicle: ${vehicle}
+Package: ${service}
+Add-ons: ${addons ? addons.join(', ') : 'None'}
+Date: ${date}
+Time: ${time}
+Duration: ${duration} minutes
+
+Remember to confirm this booking with the customer within 24 hours.
+      ,
     })
 
+    // Send confirmation email to customer
     await transporter.sendMail({
-      from: `"Milton @ Garden State Detailing" <${process.env.SMTP_USER}>`,
+      from: "Milton from Garden State Detailing" <${process.env.SMTP_USER}>,
       to: email,
-      subject: 'Your Appointment Request Received!',
-      html: htmlContent(name, true),
-      attachments: [{
-        filename: 'logo.png',
-        path: './public/gardenbstate.png',
-        cid: logoCid
-      }]
+      subject: 'Thanks for Choosing Garden State Detailing!',
+      text: 
+Hi ${name},
+
+Thanks for choosing Garden State Detailing! I've received your appointment request and I'm excited to work on your ${vehicle}.
+
+Here are the details of your requested appointment:
+
+Package: ${service}
+Add-ons: ${addons ? addons.join(', ') : 'None'}
+Date: ${date}
+Time: ${time}
+Estimated Duration: ${duration} minutes
+
+I'll personally reach out within 24 hours to confirm these details and discuss any specific needs for your vehicle. If you need to reach me before then, you can call or text me at (973) 580-0014 or email me at gardenstatedetailingllc@gmail.com.
+
+Looking forward to bringing your car back to life!
+
+Best regards,
+Milton
+Garden State Detailing
+      ,
     })
 
     return res.status(200).json({ message: 'Appointment booked successfully', appointmentId: newAppointment.id })
-  } catch (err) {
-    console.error('Email error:', err)
-    return res.status(500).json({ error: 'Failed to send confirmation emails' })
+  } catch (error) {
+    console.error('Email sending error:', error)
+    return res.status(500).json({ error: Failed to send confirmation emails: ${error.message} })
   }
 }
