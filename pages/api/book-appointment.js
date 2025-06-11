@@ -297,7 +297,7 @@ function createCustomerEmailTemplate(appointment) {
         .detail-row { margin: 10px 0; }
         .label { font-weight: bold; color: #2c3e50; }
         .value { color: #34495e; }
-        .highlight { background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0; }
+        .highlight { background-color: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0; border: 1px solid #e9ecef; }
         .contact-info { background-color: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0; }
         .footer { background-color: #2c3e50; color: white; padding: 20px; text-align: center; border-radius: 0 0 8px 8px; }
         .social-links { margin: 15px 0; }
@@ -344,9 +344,9 @@ function createCustomerEmailTemplate(appointment) {
                 ` : ''}
             </div>
             
-            <div class="highlight">
-                <p><strong>🕐 What's Next?</strong></p>
-                <p>I'll personally reach out within <strong>24 hours</strong> to confirm these details and discuss any specific needs for your vehicle.</p>
+            <div class="highlight" style="white-space: normal; overflow: visible;">
+                <h3 style="margin-top: 0; color: #3498db;">🕐 What's Next?</h3>
+                <p style="margin: 10px 0;">I'll personally reach out within <strong>24 hours</strong> to confirm these details and discuss any specific needs for your vehicle.</p>
             </div>
             
             <div class="contact-info">
