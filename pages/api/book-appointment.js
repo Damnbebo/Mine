@@ -22,8 +22,8 @@ const transporter = nodemailer.createTransport({
   port: process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT) : 587,
   secure: false,
   auth: {
-    user: process.env.SMTP_USER || 'toshidelay@gmail.com',
-    pass: process.env.SMTP_PASS || 'jaqe olxj bzph qcss',
+    user: process.env.SMTP_USER || 'gardenstatedetailingllc@gmail.com',
+    pass: process.env.SMTP_PASS || 'tscy lqkx azcf tiff',
   },
 })
 
@@ -147,8 +147,8 @@ export default async function handler(req, res) {
     
     // Send email to admin
     await transporter.sendMail({
-      from: `"Garden State Detailing" <toshidelay@gmail.com>`,
-      to: 'toshidelay@gmail.com',
+      from: `"Garden State Detailing" <gardendetailingllc@gmail.com>`,
+      to: 'gardendetailingllc@gmail.com',
       subject: 'New Detail Appointment Request',
       html: createAdminEmailTemplate(newAppointment),
       attachments: [{
