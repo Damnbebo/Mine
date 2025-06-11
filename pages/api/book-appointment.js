@@ -106,7 +106,7 @@ export default async function handler(req, res) {
       html: htmlContent(name, true),
       attachments: [{
         filename: 'logo.png',
-        path: './public/GardenStae.png',
+        path: './public/gardenbstate.png',
         cid: logoCid
       }]
     })
