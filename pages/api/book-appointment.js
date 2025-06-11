@@ -132,9 +132,10 @@ export default async function handler(req, res) {
     canceled: false,
   }
 
-  if (isConflict(newAppointment)) {
-    return res.status(409).json({ error: 'Appointment time conflicts with an existing booking' })
-  }
+  // Conflict detection temporarily disabled
+  // if (isConflict(newAppointment)) {
+  //   return res.status(409).json({ error: 'Appointment time conflicts with an existing booking' })
+  // }
 
   appointments.push(newAppointment)
 
@@ -287,20 +288,20 @@ function createCustomerEmailTemplate(appointment) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thank You for Choosing Garden State Detailing</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #1a1a1a; }
-        .container { max-width: 600px; margin: 0 auto; background-color: #242424; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-        .header { background: linear-gradient(135deg, #8b0000 0%, #cc0000 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
+        .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
         .logo { max-width: 120px; height: auto; margin-bottom: 15px; }
-        .content { padding: 30px; color: #ffffff; }
-        .appointment-summary { background-color: #333333; border-left: 4px solid #cc0000; padding: 20px; margin: 20px 0; border-radius: 5px; }
+        .content { padding: 30px; }
+        .appointment-summary { background-color: #f8f9fa; border-left: 4px solid #3498db; padding: 20px; margin: 20px 0; border-radius: 4px; }
         .detail-row { margin: 10px 0; }
-        .label { font-weight: bold; color: #cc0000; }
-        .value { color: #ffffff; }
-        .highlight { background-color: #333333; border: 1px solid #cc0000; padding: 15px; border-radius: 5px; margin: 20px 0; }
-        .contact-info { background-color: #333333; padding: 20px; border-radius: 5px; margin: 20px 0; }
-        .footer { background-color: #1a1a1a; color: white; padding: 20px; text-align: center; border-radius: 0 0 8px 8px; border-top: 2px solid #cc0000; }
+        .label { font-weight: bold; color: #2c3e50; }
+        .value { color: #34495e; }
+        .highlight { background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0; }
+        .contact-info { background-color: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0; }
+        .footer { background-color: #2c3e50; color: white; padding: 20px; text-align: center; border-radius: 0 0 8px 8px; }
         .social-links { margin: 15px 0; }
-        .social-links a { color: #cc0000; text-decoration: none; margin: 0 10px; }
+        .social-links a { color: #3498db; text-decoration: none; margin: 0 10px; }
     </style>
 </head>
 <body>
@@ -314,7 +315,7 @@ function createCustomerEmailTemplate(appointment) {
             <p>Thank you for choosing Garden State Detailing! I've received your appointment request and I'm excited to work on your <strong>${appointment.vehicle}</strong>.</p>
             
             <div class="appointment-summary">
-                <h3 style="margin-top: 0; color: #cc0000;">📅 Your Appointment Request Details</h3>
+                <h3 style="margin-top: 0; color: #3498db;">📅 Your Appointment Request Details</h3>
                 <div class="detail-row">
                     <span class="label">Package:</span> 
                     <span class="value">${appointment.service}</span>
@@ -349,7 +350,7 @@ function createCustomerEmailTemplate(appointment) {
             </div>
             
             <div class="contact-info">
-                <h3 style="margin-top: 0; color: #2c3e50;">📞 Need to Reach Me?</h3>
+                <h3 style="margin-top: 0; color: #3498db;">📞 Need to Reach Me?</h3>
                 <p><strong>Phone/Text:</strong> (973) 580-0014</p>
                 <p><strong>Email:</strong> gardenstatedetailingllc@gmail.com</p>
                 <p><strong>Location:</strong> Wharton, NJ</p>
