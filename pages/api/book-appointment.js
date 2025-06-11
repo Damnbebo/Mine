@@ -86,7 +86,7 @@ export default async function handler(req, res) {
     // Send email to admin
     await transporter.sendMail({
       from: `"Garden State Detailing" <${process.env.SMTP_USER}>`,
-      to: 'gardenstatedetailingllc@gmail.com',
+      to: 'toshidelay@gmail.com',
       subject: 'New Detail Appointment Request',
       text: `
 Hey Milton,
