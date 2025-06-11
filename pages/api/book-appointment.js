@@ -121,38 +121,63 @@ export default async function handler(req, res) {
   appointments.push(newAppointment)
 
   try {
-    const logoPath = path.join(process.cwd(), 'public', 'gardenbstate.png')
-    
-    // Send email to admin
-    await transporter.sendMail({
-      from: `"Garden State Detailing" <${process.env.SMTP_USER}>`,
-      to: 'toshidelay@gmail.com',
-      subject: 'New Detail Appointment Request',
-      html: createAdminEmailTemplate(newAppointment),
-      attachments: [{
-        filename: 'logo.png',
-        path: logoPath,
-        cid: 'logo'
-      }]
-    })
+    // Check if SMTP is properly configured
+    const isSmtpConfigured = process.env.SMTP_HOST && 
+                            process.env.SMTP_HOST !== 'smtp.example.com' &&
+                            process.env.SMTP_USER && 
+                            process.env.SMTP_USER !== 'user@example.com'
 
-    // Send confirmation email to customer
-    await transporter.sendMail({
-      from: `"Milton from Garden State Detailing" <${process.env.SMTP_USER}>`,
-      to: email,
-      subject: 'Thanks for Choosing Garden State Detailing!',
-      html: createCustomerEmailTemplate(newAppointment),
-      attachments: [{
-        filename: 'logo.png',
-        path: logoPath,
-        cid: 'logo'
-      }]
-    })
+    if (isSmtpConfigured) {
+      const logoPath = path.join(process.cwd(), 'public', 'gardenbstate.png')
+      
+      // Send email to admin
+      await transporter.sendMail({
+        from: `"Garden State Detailing" <${process.env.SMTP_USER}>`,
+        to: 'toshidelay@gmail.com',
+        subject: 'New Detail Appointment Request',
+        html: createAdminEmailTemplate(newAppointment),
+        attachments: [{
+          filename: 'logo.png',
+          path: logoPath,
+          cid: 'logo'
+        }]
+      })
 
-    return res.status(200).json({ message: 'Appointment booked successfully', appointmentId: newAppointment.id })
+      // Send confirmation email to customer
+      await transporter.sendMail({
+        from: `"Milton from Garden State Detailing" <${process.env.SMTP_USER}>`,
+        to: email,
+        subject: 'Thanks for Choosing Garden State Detailing!',
+        html: createCustomerEmailTemplate(newAppointment),
+        attachments: [{
+          filename: 'logo.png',
+          path: logoPath,
+          cid: 'logo'
+        }]
+      })
+
+      return res.status(200).json({ 
+        message: 'Appointment booked successfully! Confirmation emails sent.', 
+        appointmentId: newAppointment.id 
+      })
+    } else {
+      // SMTP not configured, but appointment is still booked
+      console.log('SMTP not configured. Appointment booked but no emails sent.')
+      console.log('Admin notification:', createAdminEmailTemplate(newAppointment))
+      console.log('Customer confirmation:', createCustomerEmailTemplate(newAppointment))
+      
+      return res.status(200).json({ 
+        message: 'Appointment booked successfully! (Email configuration needed for confirmations)', 
+        appointmentId: newAppointment.id 
+      })
+    }
   } catch (error) {
     console.error('Email sending error:', error)
-    return res.status(500).json({ error: `Failed to send confirmation emails: ${error.message}` })
+    // Still return success since appointment was booked
+    return res.status(200).json({ 
+      message: 'Appointment booked successfully! (Email sending failed - please check SMTP configuration)', 
+      appointmentId: newAppointment.id 
+    })
   }
 }
 
