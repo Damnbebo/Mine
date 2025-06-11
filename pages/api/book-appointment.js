@@ -94,7 +94,7 @@ export default async function handler(req, res) {
       html: htmlContent('Milton'),
       attachments: [{
         filename: 'logo.png',
-        path: './public/GardenStae.png', // Or wherever your public logo is
+        path: './public/gardenbstate.png', // Or wherever your public logo is
         cid: logoCid
       }]
     })
