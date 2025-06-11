@@ -1,0 +1,342 @@
+.pricing {
+  background: var(--background-black);
+  position: relative;
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.sectionHeader h2 {
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  font-weight: 800;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, var(--text-white), var(--primary-red));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.sectionHeader p {
+  font-size: 1.2rem;
+  color: var(--text-gray);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+
+.pricingGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+  margin-bottom: 80px;
+}
+
+.pricingCard {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 40px 30px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.pricingCard[data-type="sedan"] {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+}
+
+.pricingCard[data-type="suv"] {
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.05) 0%, rgba(220, 38, 38, 0.02) 100%);
+}
+
+.pricingCard:hover {
+  transform: translateY(-10px);
+  border-color: var(--primary-red);
+  box-shadow: 0 25px 50px rgba(220, 38, 38, 0.2);
+}
+
+.popular {
+  border: 2px solid var(--primary-red);
+  background: rgba(220, 38, 38, 0.1);
+  transform: scale(1.05);
+}
+
+.popular:hover {
+  transform: scale(1.05) translateY(-10px);
+}
+
+.popularBadge {
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+  color: var(--text-white);
+  padding: 8px 25px;
+  border-radius: 0 0 15px 15px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.cardHeader {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.cardHeader h3 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: var(--text-white);
+}
+
+.priceSection {
+  margin-bottom: 15px;
+}
+
+.price {
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--primary-red);
+  display: block;
+  line-height: 1;
+}
+
+.duration {
+  font-size: 0.9rem;
+  color: var(--text-gray);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.description {
+  color: var(--text-gray);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.cardBody {
+  flex-grow: 1;
+  margin-bottom: 30px;
+}
+
+.featureList {
+  list-style: none;
+}
+
+.featureList li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  color: var(--text-gray);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.checkmark {
+  color: var(--primary-red);
+  font-weight: bold;
+  margin-right: 12px;
+  font-size: 1.1rem;
+  min-width: 20px;
+}
+
+.cardFooter button {
+  width: 100%;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
+
+.addOnsSection {
+  text-align: center;
+  margin-bottom: 80px;
+}
+
+.addOnsSection h3 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin-bottom: 15px;
+  color: var(--text-white);
+}
+
+.addOnsSection p {
+  font-size: 1.1rem;
+  color: var(--text-gray);
+  margin-bottom: 40px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.addOnsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.addOnCard {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.addOnCard:hover {
+  background: rgba(220, 38, 38, 0.1);
+  border-color: var(--primary-red);
+  transform: translateY(-2px);
+}
+
+.addOnName {
+  color: var(--text-white);
+  font-weight: 500;
+}
+
+.addOnPrice {
+  color: var(--primary-red);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.guaranteeSection {
+  background: rgba(220, 38, 38, 0.1);
+  border-radius: 20px;
+  padding: 50px 40px;
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  text-align: center;
+}
+
+.guaranteeContent h3 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin-bottom: 15px;
+  color: var(--text-white);
+}
+
+.guaranteeContent p {
+  font-size: 1.1rem;
+  color: var(--text-gray);
+  margin-bottom: 40px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.guaranteeFeatures {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.guaranteeItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.guaranteeIcon {
+  font-size: 2rem;
+  margin-bottom: 5px;
+}
+
+.guaranteeItem span:last-child {
+  color: var(--text-white);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .pricingGrid {
+    grid-template-columns: 1fr;
+    gap: 25px;
+    margin-bottom: 60px;
+  }
+
+  .pricingCard {
+    padding: 30px 25px;
+  }
+
+  .popular {
+    transform: none;
+  }
+
+  .popular:hover {
+    transform: translateY(-10px);
+  }
+
+  .price {
+    font-size: 2.5rem;
+  }
+
+  .addOnsGrid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .guaranteeSection {
+    padding: 40px 25px;
+  }
+
+  .guaranteeFeatures {
+    gap: 30px;
+  }
+
+  .sectionHeader {
+    margin-bottom: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pricingCard {
+    padding: 25px 20px;
+  }
+
+  .cardHeader h3 {
+    font-size: 1.5rem;
+  }
+
+  .price {
+    font-size: 2.2rem;
+  }
+
+  .guaranteeSection {
+    padding: 30px 20px;
+  }
+
+  .guaranteeFeatures {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
+
+/* Animation delays for staggered effect */
+.pricingCard:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.pricingCard:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+.pricingCard:nth-child(3) {
+  animation-delay: 0.5s;
+}

@@ -1,0 +1,264 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(10px);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0;
+  transform: translateY(0);
+  height: 100px;
+  display: flex;
+  align-items: center;
+  padding-top: 0;
+  will-change: transform, background-color, height;
+}
+
+.navbar.slide-up {
+  transform: translateY(-15px);
+}
+
+.logo {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: left;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  max-width: 130px;
+  position: relative;
+  z-index: 1002;
+  will-change: transform;
+}
+
+.logo.scaled {
+  transform: scale(0.75);
+}
+
+.navContent.menuOpen .logo {
+  transform: scale(0.7);
+  transition-duration: 0.3s;
+}
+
+.navbar.scrolled {
+  background: rgba(0, 0, 0, 0.95);
+  padding: 10px 0;
+  box-shadow: 0 2px 20px rgba(220, 38, 38, 0.1);
+}
+
+.navContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo h2 {
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--text-white);
+  margin: 0;
+  letter-spacing: 2px;
+  background: linear-gradient(135deg, var(--text-white), var(--primary-red));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.navLink {
+  background: none;
+  color: var(--text-white);
+  font-size: 16px;
+  font-weight: 500;
+  padding: 8px 0;
+  position: relative;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.navLink:hover {
+  color: var(--primary-red);
+}
+
+.navLink::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--primary-red);
+  transition: width 0.3s ease;
+}
+
+.navLink:hover::after {
+  width: 100%;
+}
+
+.bookingBtn {
+  background: linear-gradient(135deg, var(--primary-red), var(--dark-red)) !important;
+  color: var(--text-white) !important;
+  padding: 12px 25px !important;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.bookingBtn:hover {
+  background: linear-gradient(135deg, var(--light-red), var(--primary-red)) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3);
+}
+
+.bookingBtn::after {
+  display: none;
+}
+
+.mobileToggle {
+  display: none;
+  flex-direction: column;
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.mobileToggle span {
+  width: 22px;
+  height: 2px;
+  background: var(--text-white);
+  margin: 2px 0;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+}
+
+.mobileToggle:hover {
+  background: rgba(220, 38, 38, 0.2);
+}
+
+.mobileToggle:hover span {
+  background: var(--primary-red);
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .navbar {
+    height: 80px;
+  }
+
+  .logo {
+    height: 45px;
+    max-width: 120px;
+  }
+
+  .logo.scaled {
+    transform: scale(0.7);
+  }
+
+  .navContent.menuOpen .logo {
+    transform: scale(0.65);
+  }
+
+  .navLinks {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.95);
+    flex-direction: column;
+    padding: 20px 0;
+    gap: 15px;
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+    z-index: 1001;
+    will-change: transform, opacity, visibility;
+  }
+
+  .navLinks.mobileOpen {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .navLink {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition-delay: 0ms;
+  }
+
+  .mobileOpen .navLink {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: calc(var(--index) * 50ms);
+  }
+
+  .navLinks:not(.mobileOpen) .navLink {
+    transition-delay: calc((5 - var(--index)) * 50ms);
+  }
+
+  .mobileToggle {
+    display: flex;
+    z-index: 1002;
+    margin-left: 10px;
+    padding: 10px;
+  }
+
+  .mobileToggle span {
+    width: 20px;
+    height: 2px;
+    margin: 2px 0;
+  }
+
+  .navLink {
+    font-size: 16px;
+    padding: 12px 0;
+  }
+
+  .bookingBtn {
+    margin: 10px auto;
+    width: 90%;
+    max-width: 300px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    height: 70px;
+    padding: 10px 0;
+  }
+
+  .logo {
+    height: 35px;
+    max-width: 100px;
+  }
+
+  .logo.scaled {
+    transform: scale(0.65);
+  }
+
+  .navContent.menuOpen .logo {
+    transform: scale(0.6);
+  }
+
+  .navLinks {
+    top: 70px;
+    padding: 15px 0;
+  }
+}

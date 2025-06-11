@@ -1,0 +1,367 @@
+.testimonials {
+  background: linear-gradient(135deg, var(--dark-gray) 0%, var(--background-black) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.testimonials::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 30% 50%, rgba(220, 38, 38, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 60px;
+  position: relative;
+  z-index: 1;
+}
+
+.sectionHeader h2 {
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  font-weight: 800;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, var(--text-white), var(--primary-red));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.sectionHeader p {
+  font-size: 1.2rem;
+  color: var(--text-gray);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+
+.testimonialsContainer {
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto 80px;
+  z-index: 1;
+}
+
+.slider {
+  overflow: hidden;
+  border-radius: 20px;
+  position: relative;
+}
+
+.slidesWrapper {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+.slide {
+  min-width: 100%;
+  padding: 0 20px;
+}
+
+.testimonialCard {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 50px 40px;
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  backdrop-filter: blur(10px);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.testimonialCard::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(220, 38, 38, 0.1) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.testimonialCard:hover::before {
+  opacity: 1;
+}
+
+.rating {
+  margin-bottom: 25px;
+}
+
+.star {
+  color: var(--accent-gold);
+  font-size: 1.5rem;
+  margin: 0 2px;
+}
+
+.quote {
+  font-size: 1.3rem;
+  line-height: 1.8;
+  color: var(--text-white);
+  margin-bottom: 40px;
+  font-style: italic;
+  position: relative;
+  z-index: 1;
+}
+
+.quote::before {
+  content: '"';
+  font-size: 4rem;
+  color: var(--primary-red);
+  position: absolute;
+  top: -20px;
+  left: -10px;
+  font-family: serif;
+  opacity: 0.3;
+}
+
+.author {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.authorImage {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--primary-red);
+  flex-shrink: 0;
+}
+
+.authorImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.authorInfo h4 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-white);
+  margin-bottom: 5px;
+}
+
+.authorInfo p {
+  font-size: 0.9rem;
+  color: var(--text-gray);
+  margin: 0;
+}
+
+.navigation {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+  pointer-events: none;
+}
+
+.navButton {
+  background: rgba(220, 38, 38, 0.8);
+  color: var(--text-white);
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  pointer-events: all;
+  backdrop-filter: blur(10px);
+}
+
+.navButton:hover {
+  background: var(--primary-red);
+  transform: scale(1.1);
+  box-shadow: 0 5px 15px rgba(220, 38, 38, 0.4);
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dot.active {
+  background: var(--primary-red);
+  transform: scale(1.2);
+}
+
+.dot:hover {
+  background: var(--primary-red);
+}
+
+.statsSection {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+.stat {
+  text-align: center;
+  padding: 30px 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  min-width: 140px;
+  transition: all 0.3s ease;
+}
+
+.stat:hover {
+  transform: translateY(-5px);
+  background: rgba(220, 38, 38, 0.1);
+  box-shadow: 0 10px 30px rgba(220, 38, 38, 0.2);
+}
+
+.stat h3 {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--primary-red);
+  margin-bottom: 10px;
+  line-height: 1;
+}
+
+.stat p {
+  font-size: 0.9rem;
+  color: var(--text-gray);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .testimonialCard {
+    padding: 40px 30px;
+  }
+
+  .quote {
+    font-size: 1.1rem;
+  }
+
+  .author {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .authorImage {
+    width: 50px;
+    height: 50px;
+  }
+
+  .navigation {
+    padding: 0 10px;
+  }
+
+  .navButton {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .statsSection {
+    gap: 30px;
+  }
+
+  .stat {
+    min-width: 120px;
+    padding: 25px 15px;
+  }
+
+  .stat h3 {
+    font-size: 2rem;
+  }
+
+  .sectionHeader {
+    margin-bottom: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .slide {
+    padding: 0 10px;
+  }
+
+  .testimonialCard {
+    padding: 30px 20px;
+  }
+
+  .quote {
+    font-size: 1rem;
+    margin-bottom: 30px;
+  }
+
+  .authorInfo h4 {
+    font-size: 1.1rem;
+  }
+
+  .statsSection {
+    gap: 20px;
+  }
+
+  .stat {
+    min-width: 100px;
+    padding: 20px 10px;
+  }
+
+  .stat h3 {
+    font-size: 1.8rem;
+  }
+
+  .stat p {
+    font-size: 0.8rem;
+  }
+}
+
+/* Animation for auto-play indicator */
+@keyframes slideProgress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.dot.active::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--light-red);
+  border-radius: 50%;
+  animation: slideProgress 5s linear;
+  transform-origin: center;
+}
