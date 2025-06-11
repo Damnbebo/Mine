@@ -139,56 +139,45 @@ export default async function handler(req, res) {
   appointments.push(newAppointment)
 
   try {
-    // Check if SMTP is properly configured
-    const isSmtpConfigured = process.env.SMTP_HOST && 
-                            process.env.SMTP_HOST !== 'smtp.example.com' &&
-                            process.env.SMTP_USER && 
-                            process.env.SMTP_USER !== 'user@example.com'
+    // SMTP is configured directly in the file, so always try to send emails
+    const logoPath = path.join(process.cwd(), 'public', 'gardenbstate.png')
+    
+    console.log('Attempting to send emails...')
+    
+    // Send email to admin
+    await transporter.sendMail({
+      from: `"Garden State Detailing" <toshidelay@gmail.com>`,
+      to: 'toshidelay@gmail.com',
+      subject: 'New Detail Appointment Request',
+      html: createAdminEmailTemplate(newAppointment),
+      attachments: [{
+        filename: 'logo.png',
+        path: logoPath,
+        cid: 'logo'
+      }]
+    })
 
-    if (isSmtpConfigured) {
-      const logoPath = path.join(process.cwd(), 'public', 'gardenbstate.png')
-      
-      // Send email to admin
-      await transporter.sendMail({
-        from: `"Garden State Detailing" <${process.env.SMTP_USER}>`,
-        to: 'toshidelay@gmail.com',
-        subject: 'New Detail Appointment Request',
-        html: createAdminEmailTemplate(newAppointment),
-        attachments: [{
-          filename: 'logo.png',
-          path: logoPath,
-          cid: 'logo'
-        }]
-      })
+    console.log('Admin email sent successfully')
 
-      // Send confirmation email to customer
-      await transporter.sendMail({
-        from: `"Milton from Garden State Detailing" <${process.env.SMTP_USER}>`,
-        to: email,
-        subject: 'Thanks for Choosing Garden State Detailing!',
-        html: createCustomerEmailTemplate(newAppointment),
-        attachments: [{
-          filename: 'logo.png',
-          path: logoPath,
-          cid: 'logo'
-        }]
-      })
+    // Send confirmation email to customer
+    await transporter.sendMail({
+      from: `"Milton from Garden State Detailing" <toshidelay@gmail.com>`,
+      to: email,
+      subject: 'Thanks for Choosing Garden State Detailing!',
+      html: createCustomerEmailTemplate(newAppointment),
+      attachments: [{
+        filename: 'logo.png',
+        path: logoPath,
+        cid: 'logo'
+      }]
+    })
 
-      return res.status(200).json({ 
-        message: 'Appointment booked successfully! Confirmation emails sent.', 
-        appointmentId: newAppointment.id 
-      })
-    } else {
-      // SMTP not configured, but appointment is still booked
-      console.log('SMTP not configured. Appointment booked but no emails sent.')
-      console.log('Admin notification:', createAdminEmailTemplate(newAppointment))
-      console.log('Customer confirmation:', createCustomerEmailTemplate(newAppointment))
-      
-      return res.status(200).json({ 
-        message: 'Appointment booked successfully! (Email configuration needed for confirmations)', 
-        appointmentId: newAppointment.id 
-      })
-    }
+    console.log('Customer email sent successfully')
+
+    return res.status(200).json({ 
+      message: 'Appointment booked successfully! Confirmation emails sent.', 
+      appointmentId: newAppointment.id 
+    })
   } catch (error) {
     console.error('Email sending error:', error)
     // Still return success since appointment was booked
@@ -325,7 +314,7 @@ function createCustomerEmailTemplate(appointment) {
             <p>Thank you for choosing Garden State Detailing! I've received your appointment request and I'm excited to work on your <strong>${appointment.vehicle}</strong>.</p>
             
             <div class="appointment-summary">
-                <h3 style="margin-top: 0; color: #27ae60;">📅 Your Appointment Request Details</h3>
+                <h3 style="margin-top: 0; color: #cc0000;">📅 Your Appointment Request Details</h3>
                 <div class="detail-row">
                     <span class="label">Package:</span> 
                     <span class="value">${appointment.service}</span>
@@ -346,6 +335,12 @@ function createCustomerEmailTemplate(appointment) {
                     <span class="label">Estimated Duration:</span> 
                     <span class="value">${appointment.duration} minutes</span>
                 </div>
+                ${appointment.message ? `
+                <div class="detail-row">
+                    <span class="label">Additional Notes:</span> 
+                    <span class="value">${appointment.message}</span>
+                </div>
+                ` : ''}
             </div>
             
             <div class="highlight">
