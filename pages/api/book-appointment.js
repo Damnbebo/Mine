@@ -1,9 +1,21 @@
 import nodemailer from 'nodemailer'
 import path from 'path'
 
-// In-memory storage for appointments (resets on server restart)
-// Note: For production, consider using a database or external storage service
+// In-memory storage for appointments with 24-hour expiration
 let appointments = []
+
+// Clean up expired appointments (older than 24 hours)
+function cleanupExpiredAppointments() {
+  const now = new Date()
+  appointments = appointments.filter(appt => {
+    const apptDate = new Date(appt.date)
+    const hoursDiff = (now - apptDate) / (1000 * 60 * 60)
+    return hoursDiff < 24
+  })
+}
+
+// Clean up every hour
+setInterval(cleanupExpiredAppointments, 1000 * 60 * 60)
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
@@ -28,6 +40,9 @@ function convertTo24Hour(time12h) {
 }
 
 function isConflict(newAppointment) {
+  // Clean up expired appointments before checking conflicts
+  cleanupExpiredAppointments()
+  
   const newTime24 = convertTo24Hour(newAppointment.time)
   const newStart = new Date(newAppointment.date + 'T' + newTime24)
   const newEnd = new Date(newStart.getTime() + newAppointment.duration * 60000)
@@ -38,7 +53,8 @@ function isConflict(newAppointment) {
     time24: newTime24,
     duration: newAppointment.duration,
     newStart: newStart.toISOString(),
-    newEnd: newEnd.toISOString()
+    newEnd: newEnd.toISOString(),
+    totalAppointments: appointments.length
   })
 
   for (const appt of appointments) {
@@ -85,6 +101,7 @@ export default async function handler(req, res) {
     time,
     addons,
     duration,
+    message,
   } = req.body
 
   if (
@@ -111,6 +128,7 @@ export default async function handler(req, res) {
     time,
     addons: addons || [],
     duration,
+    message: message || '',
     canceled: false,
   }
 
@@ -251,6 +269,12 @@ function createAdminEmailTemplate(appointment) {
                     <span class="label">Duration:</span> 
                     <span class="value">${appointment.duration} minutes</span>
                 </div>
+                ${appointment.message ? `
+                <div class="detail-row">
+                    <span class="label">Additional Notes:</span> 
+                    <span class="value">${appointment.message}</span>
+                </div>
+                ` : ''}
             </div>
             
             <p><strong>⏰ Remember to confirm this booking with the customer within 24 hours.</strong></p>
@@ -274,20 +298,20 @@ function createCustomerEmailTemplate(appointment) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thank You for Choosing Garden State Detailing</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
-        .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .header { background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #1a1a1a; }
+        .container { max-width: 600px; margin: 0 auto; background-color: #242424; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .header { background: linear-gradient(135deg, #8b0000 0%, #cc0000 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
         .logo { max-width: 120px; height: auto; margin-bottom: 15px; }
-        .content { padding: 30px; }
-        .appointment-summary { background-color: #f8f9fa; border-left: 4px solid #27ae60; padding: 20px; margin: 20px 0; border-radius: 5px; }
+        .content { padding: 30px; color: #ffffff; }
+        .appointment-summary { background-color: #333333; border-left: 4px solid #cc0000; padding: 20px; margin: 20px 0; border-radius: 5px; }
         .detail-row { margin: 10px 0; }
-        .label { font-weight: bold; color: #2c3e50; }
-        .value { color: #34495e; }
-        .highlight { background-color: #e8f5e8; padding: 15px; border-radius: 5px; margin: 20px 0; }
-        .contact-info { background-color: #ecf0f1; padding: 20px; border-radius: 5px; margin: 20px 0; }
-        .footer { background-color: #2c3e50; color: white; padding: 20px; text-align: center; border-radius: 0 0 8px 8px; }
+        .label { font-weight: bold; color: #cc0000; }
+        .value { color: #ffffff; }
+        .highlight { background-color: #333333; border: 1px solid #cc0000; padding: 15px; border-radius: 5px; margin: 20px 0; }
+        .contact-info { background-color: #333333; padding: 20px; border-radius: 5px; margin: 20px 0; }
+        .footer { background-color: #1a1a1a; color: white; padding: 20px; text-align: center; border-radius: 0 0 8px 8px; border-top: 2px solid #cc0000; }
         .social-links { margin: 15px 0; }
-        .social-links a { color: #3498db; text-decoration: none; margin: 0 10px; }
+        .social-links a { color: #cc0000; text-decoration: none; margin: 0 10px; }
     </style>
 </head>
 <body>
