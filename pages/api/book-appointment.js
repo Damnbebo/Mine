@@ -1,41 +1,17 @@
 import nodemailer from 'nodemailer'
-import fs from 'fs'
 import path from 'path'
 
-// Persistent storage for appointments
-const APPOINTMENTS_FILE = path.join(process.cwd(), 'appointments.json')
-
-// Load appointments from file
-function loadAppointments() {
-  try {
-    if (fs.existsSync(APPOINTMENTS_FILE)) {
-      const data = fs.readFileSync(APPOINTMENTS_FILE, 'utf8')
-      return JSON.parse(data)
-    }
-  } catch (error) {
-    console.error('Error loading appointments:', error)
-  }
-  return []
-}
-
-// Save appointments to file
-function saveAppointments(appointments) {
-  try {
-    fs.writeFileSync(APPOINTMENTS_FILE, JSON.stringify(appointments, null, 2))
-  } catch (error) {
-    console.error('Error saving appointments:', error)
-  }
-}
-
-let appointments = loadAppointments()
+// In-memory storage for appointments (resets on server restart)
+// Note: For production, consider using a database or external storage service
+let appointments = []
 
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.example.com',
+  host: process.env.SMTP_HOST || 'smtp.gmail.com',
   port: process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT) : 587,
   secure: false,
   auth: {
-    user: process.env.SMTP_USER || 'user@example.com',
-    pass: process.env.SMTP_PASS || 'password',
+    user: process.env.SMTP_USER || 'toshidelay@gmail.com',
+    pass: process.env.SMTP_PASS || 'jaqe olxj bzph qcss',
   },
 })
 
@@ -143,7 +119,6 @@ export default async function handler(req, res) {
   }
 
   appointments.push(newAppointment)
-  saveAppointments(appointments)
 
   try {
     const logoPath = path.join(process.cwd(), 'public', 'gardenbstate.png')
