@@ -147,8 +147,8 @@ export default async function handler(req, res) {
     
     // Send email to admin
     await transporter.sendMail({
-      from: `"Garden State Detailing" <gardendetailingllc@gmail.com>`,
-      to: 'gardendetailingllc@gmail.com',
+      from: `"Garden State Detailing" <gardenstatedetailingllc@gmail.com>`,
+      to: 'gardenstatedetailingllc@gmail.com',
       subject: 'New Detail Appointment Request',
       html: createAdminEmailTemplate(newAppointment),
       attachments: [{
