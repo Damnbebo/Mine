@@ -4,6 +4,29 @@ import path from 'path'
 // In-memory storage for appointments with 24-hour expiration
 let appointments = []
 
+// Sanitize input to prevent XSS attacks
+function sanitizeInput(str) {
+  if (typeof str !== 'string') return str
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+}
+
+// Validate email format
+function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return emailRegex.test(email) && email.length <= 254
+}
+
+// Validate phone format (basic)
+function isValidPhone(phone) {
+  const phoneRegex = /^[\d\s\-\(\)\+]+$/
+  return phoneRegex.test(phone) && phone.length <= 20
+}
+
 // Clean up expired appointments (older than 24 hours)
 function cleanupExpiredAppointments() {
   const now = new Date()
@@ -17,13 +40,15 @@ function cleanupExpiredAppointments() {
 // Clean up every hour
 setInterval(cleanupExpiredAppointments, 1000 * 60 * 60)
 
+// IMPORTANT: Never hardcode credentials! Use environment variables.
+// Create a .env.local file with SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.gmail.com',
+  host: process.env.SMTP_HOST,
   port: process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT) : 587,
   secure: false,
   auth: {
-    user: process.env.SMTP_USER || 'gardenstatedetailingllc@gmail.com',
-    pass: process.env.SMTP_PASS || 'tscy lqkx azcf tiff',
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
   },
 })
 
@@ -117,18 +142,29 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing required fields' })
   }
 
+  // Validate email format to prevent injection attacks
+  if (!isValidEmail(email)) {
+    return res.status(400).json({ error: 'Invalid email format' })
+  }
+
+  // Validate phone format
+  if (!isValidPhone(phone)) {
+    return res.status(400).json({ error: 'Invalid phone format' })
+  }
+
+  // Sanitize all user inputs to prevent XSS
   const newAppointment = {
     id: Date.now().toString(),
-    name,
-    email,
-    phone,
-    vehicle,
-    service,
-    date,
-    time,
-    addons: addons || [],
+    name: sanitizeInput(name),
+    email: sanitizeInput(email),
+    phone: sanitizeInput(phone),
+    vehicle: sanitizeInput(vehicle),
+    service: sanitizeInput(service),
+    date: sanitizeInput(date),
+    time: sanitizeInput(time),
+    addons: Array.isArray(addons) ? addons.map(sanitizeInput) : [],
     duration,
-    message: message || '',
+    message: sanitizeInput(message || ''),
     canceled: false,
   }
 
