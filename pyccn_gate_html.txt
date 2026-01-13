@@ -1,0 +1,26 @@
+
+                <!-- PyCCN Gate -->
+                <div class="fwgates-option<?php echo !($gate_availability['pyccn'] ?? false) ? ' disabled' : ''; ?>" data-gate="pyccn" data-visible="<?php echo ($gate_visibility['pyccn'] ?? true) ? 'true' : 'false'; ?>" onclick="selectFWGate('pyccn')" style="background: linear-gradient(135deg, #2d1f3d 0%, #4a2c6a 100%); padding: 20px; border-radius: 12px; cursor: pointer; margin-bottom: 15px; transition: transform 0.2s, box-shadow 0.2s; border: 1px solid rgba(167, 139, 250, 0.3);<?php echo !($gate_availability['pyccn'] ?? false) ? ' opacity: 0.5;' : ''; ?>">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div style="font-size: 40px;">🐍</div>
+                        <div style="flex: 1;">
+                            <div style="font-size: 18px; font-weight: bold; color: #fff;">PyCCN Gate</div>
+                            <div style="font-size: 14px; color: #94a3b8; margin-top: 5px;">Playwright-based Card Checker - Real-time Status</div>
+                        </div>
+                        <div style="padding: 6px 12px; background: #00ff88; color: #000; border-radius: 6px; font-size: 12px; font-weight: bold;">Online</div>
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                        <span style="padding: 4px 8px; background: rgba(167, 139, 250, 0.2); border-radius: 4px; font-size: 11px;">Real-time Status</span>
+                        <span style="padding: 4px 8px; background: rgba(167, 139, 250, 0.2); border-radius: 4px; font-size: 11px;">CCN Check</span>
+                        <span style="padding: 4px 8px; background: rgba(251, 191, 36, 0.2); color: #fbbf24; border-radius: 4px; font-size: 11px;">30+ Credits</span>
+                    </div>
+                    <?php $pyccnConfig = $creditModel->getGateConfig('pyccn'); ?>
+                    <div style="margin-top: 12px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px; font-size: 12px; border-left: 3px solid #a78bfa;">
+                        <div style="color: #94a3b8; margin-bottom: 6px;">💰 Credit Cost:</div>
+                        <div style="display: flex; gap: 15px; flex-wrap: wrap; color: #fff;">
+                            <span>Min: <strong style="color: #fbbf24;"><?php echo $pyccnConfig['min_credits_required'] ?? 30; ?></strong></span>
+                            <span>Live: <strong style="color: #4ade80;"><?php echo $pyccnConfig['credits_per_live'] ?? 6; ?></strong></span>
+                            <span>Dead: <strong style="color: #f87171;"><?php echo $pyccnConfig['credits_per_dead'] ?? 1; ?></strong></span>
+                        </div>
+                    </div>
+                </div>
